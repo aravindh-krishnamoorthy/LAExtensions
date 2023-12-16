@@ -6,7 +6,7 @@ _Staging area for linear algebra extensions to numerical linear algebra packages
 <p align="justify">Contributions in the form of code and documentation are welcome and will help speed up upstream submissions. This is a hobbyist's repository.</p>
 
 <p align="justify">These functions are not intended to be used directly and the author discourages such use. But the author is also aware that he cannot tell the world what to do.</p>
-<p align="right">ARK</p>
+<p align="right">ark</p>
 
 ---
 

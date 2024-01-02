@@ -1,5 +1,6 @@
 using LinearAlgebra
 
+# Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
 function trgdsy!(uplo::Char, RL::AbstractMatrix{T}, d::AbstractVector{T}) where {T}
     n = size(RL,1)
     v = zeros(T,n,1)

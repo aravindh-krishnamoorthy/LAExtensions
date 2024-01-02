@@ -1,7 +1,26 @@
 using LinearAlgebra
 
-# Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
 function trgdsy!(uplo::Char, RL::AbstractMatrix{T}, d::AbstractVector{T}) where {T}
+    n = size(RL,1)
+    v = zeros(T,n,1)
+    if uplo == 'U'
+        v[n] = d[n]
+        @views LAPACK.trtrs!('U', 'N', 'N', RL[1:n,1:n], v)
+        RL[n,1:n] = v
+        for i=n-1:-1:1
+            for j=1:n v[j] = 0 end
+            v[i] = d[i]
+            @views BLAS.gemm!('N', 'N', -1., RL[1:i,i+1:n], RL[i+1:n,i], +1., v[1:i])
+            @views LAPACK.trtrs!('U', 'N', 'N', RL[1:i,1:i], v[1:i])
+            RL[i,1:i] = v[1:i]
+        end
+        RL = Hermitian(RL, :L)
+    else # if uplo == 'L'
+    end
+end
+
+# Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
+function trgdsy_scalar!(uplo::Char, RL::AbstractMatrix{T}, d::AbstractVector{T}) where {T}
     N = size(RL,1)
     for i=1:N
         RL[i,i], d[i] = d[i], RL[i,i]

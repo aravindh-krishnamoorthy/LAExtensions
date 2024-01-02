@@ -2,14 +2,13 @@ using LinearAlgebra
 
 # Include lower level files
 include("trgdsy.jl")
-include("trtrsy.jl")
 
 # Select default implementation
 inv(A::Union{Hermitian{T,S}, Symmetric{T,S}}) where {T,S} = inv(A, ReferenceImpl())
 
 # Reference Implementation
 function inv(A::Union{Hermitian{T,S}, Symmetric{T,S}}, ::ReferenceImpl) where {T,S}
-    LU = lu(A)
+    LU = lu(A, NoPivot())
     return trgdsy!('U', LU.U, ones(size(A,1)))
 end
 

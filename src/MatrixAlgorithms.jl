@@ -1,4 +1,4 @@
-module LAExtensions
+module MatrixAlgorithms
 
 using LinearAlgebra
 

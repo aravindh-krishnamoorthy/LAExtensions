@@ -11,3 +11,8 @@ _Staging area for matrix algebra algorithms_
 
 ---
 
+## Usage
+This package can be loaded under Julia as follows:
+```julia
+julia> include("/<path>/MatrixAlgorithms/src/MatrixAlgorithms.jl")
+```

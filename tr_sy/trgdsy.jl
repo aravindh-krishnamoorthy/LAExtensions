@@ -4,6 +4,17 @@ function trgdsy!(uplo::Char, RL::AbstractMatrix{T}, d::AbstractVector{T}) where 
     n = size(RL,1)
     v = zeros(T,n,1)
     if uplo == 'U'
+
+        ########################################
+        # ALGORITHM
+        ########################################
+        # R(n,1:n) = R[1:n,1:n]\D[1:n,n]
+        # for i=n-1:-1:1
+        #     R[i,1:i] = R[1:i,1:i]\(D[1:i,i] - R[1:i,i+1:N]*R[i+1:N,i])
+        # end
+        # R = tril(R)
+        ########################################
+
         v[n] = d[n]
         @views LAPACK.trtrs!('U', 'N', 'N', RL[1:n,1:n], v)
         RL[n,1:n] = v

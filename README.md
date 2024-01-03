@@ -6,7 +6,7 @@ _Staging area for matrix algebra algorithms_
 
   | Directory | Description | Development Stage |
   |---|---|---|
-  | [posi](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posi) | Efficient matrix inversion of positive definite matrices. | Partial |
+  | [posi](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posi) | Efficient matrix inversion of positive definite matrices | Partial |
 
 </div>
 

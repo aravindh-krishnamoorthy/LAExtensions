@@ -16,7 +16,7 @@ using LinearAlgebra
 #   SIAM Journal on Matrix Analysis and Applications (Vol. 24, Issue 4, pp. 971–989).
 #   https://doi.org/10.1137/s0895479801392697
 #
-# NOTE: The matrix is converted to complex field if the diagonal values of the
+# NOTE: The matrix is lifted to the complex field if the diagonal values of the
 #         triangular Schur matrix does not have a square root in type T
 #
 ################################################################################

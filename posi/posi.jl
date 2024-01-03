@@ -1,3 +1,10 @@
+################################################################################
+# This file is a part of the package: MatrixAlgorithms
+# Released under the MIT license, see LICENSE file for details.
+# Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
+#
+################################################################################
+
 using LinearAlgebra
 
 ################################################################################
@@ -16,14 +23,7 @@ function posi!(X::AbstractMatrix{T}) where {T}
     LAPACK.potrf!('U', X)
 
     ########################################
-    # MATLAB ALGORITHM
-    ########################################
-    # D = diag(1./diag(R)) ;
-    # R(n,1:n) = conj(R(1:n,1:n)\D(1:n,n)) ;
-    # for i=n-1:-1:1
-    #     R(i,1:i) = conj(R(1:i,1:i)\(D(1:i,i) - R(1:i,i+1:N)*R(i+1:N,i))) ;
-    # end
-    # R = tril(R) ;
+    # Inversion
     ########################################
     v[n] = 1/X[n,n]
     @views LAPACK.trtrs!('U', 'N', 'N', X[1:n,1:n], v)

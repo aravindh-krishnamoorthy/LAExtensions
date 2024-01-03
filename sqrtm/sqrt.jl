@@ -22,13 +22,17 @@ using LinearAlgebra
 function sqrt(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("sqrt: Matrix A must be square."))
+    symmetric = issymmetric(A)
     S = schur(A)
     d = diag(S.T)
     if all(isreal(d)) && any(d .< 0)
-        S = Schur{Complex}(S)
-        d = diag(S.T)
+        if issymmetric
+            d = complex.(d)
+        else
+            S.T = complex.(S.T)
+        end
     end
-    if issymmetric(A)
+    if symmetric
         return S.Z * Diagonal(sqrt(d)) * S.Z'
     else
         return S.Z * _sqrt_quasi_triu!(S.T) * S.Z'

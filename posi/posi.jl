@@ -2,7 +2,6 @@
 # This file is a part of the package: MatrixAlgorithms
 # Released under the MIT license, see LICENSE file for details.
 # Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
-#
 ################################################################################
 
 using LinearAlgebra

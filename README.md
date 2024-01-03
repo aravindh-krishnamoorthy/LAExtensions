@@ -6,7 +6,8 @@ _Staging area for matrix algebra algorithms_
 
   | Directory | Description | Target | Development Stage |
   |---|---|---|---|
-  | [posi](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posi) | Efficient matrix inversion of positive definite matrices | LAPACK | Partial |
+  | [posi](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posi) | Efficient inversion of positive definite matrices | LAPACK | Partial |
+  | [sqrtm](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/sqrtm) | Efficient square root of matrices | Julia StdLib | Partial |
 
 </div>
 

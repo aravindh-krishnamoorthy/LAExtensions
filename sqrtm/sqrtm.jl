@@ -20,17 +20,17 @@ using LinearAlgebra
 #         triangular Schur matrix does not have a square root in type T
 #
 ################################################################################
-function sqrt(A::AbstractMatrix{T}) where {T}
+function sqrtm(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("sqrt: Matrix A must be square."))
     symmetric = issymmetric(A)
     S = schur(A)
     d = diag(S.T)
     if all(isreal(d)) && any(d .< 0)
-        if issymmetric
+        if symmetric
             d = complex.(d)
         else
-            S.T = complex.(S.T)
+            S = Schur{Complex}(S)
         end
     end
     if symmetric

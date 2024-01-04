@@ -11,6 +11,6 @@ include("../posi/posi.jl")
 # sqrtm:
 # Matrix square root
 ########################################
-include("../sqrtm/sqrt.jl")
+include("../sqrtm/sqrtm.jl")
 
 end

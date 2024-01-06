@@ -7,8 +7,8 @@ _Staging area for matrix algebra algorithms in **M**ATLAB, **J**ulia, **F**ortra
   | Directory | Language | Description | Target | Development Stage |
   |---|---|---|---|---|
   | [posi](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posol) | M-J-F-C | Efficient inversion of positive definite matrices | LAPACK | Partial |
-  | [posd](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posol) | M-J-F-C | Efficient solution to `PD * SYM = DIAG`  | LAPACK | Partial |
-  | [post](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posol) | M-J-F-C | Efficient solution to `PD * SYM = LOWT`  | LAPACK | Partial |
+  | [posd](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posol) | M-J-F-C | Efficient solution to `PD * SYM = DIAG`  | LAPACK | TBD |
+  | [post](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/posol) | M-J-F-C | Efficient solution to `PD * SYM = LOWT`  | LAPACK | TBD |
   | [sqrtm](https://github.com/aravindh-krishnamoorthy/MatrixAlgorithms/tree/main/sqrtm) | J-F | Efficient square root of matrices |  | Partial |
 
 </div>

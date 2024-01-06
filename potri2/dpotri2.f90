@@ -1,0 +1,9 @@
+SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
+
+    CHARACTER          UPLO
+    INTEGER            INFO, LDA, N
+    DOUBLE PRECISION   A( LDA, * )
+
+    
+
+END

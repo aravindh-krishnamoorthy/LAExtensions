@@ -12,15 +12,9 @@ using LinearAlgebra
 #   and Deepak Menon, arXiv:1111.4144.
 ################################################################################
 
-function posi!(X::AbstractMatrix{T}) where {T}
+function potri2!(X::AbstractMatrix{T}) where {T}
     n = size(X,1)
-    v = zeros(T,n,1)
-    
-    ########################################
-    # Cholesky decomposition
-    ########################################
-    LAPACK.potrf!('U', X)
-
+    v = zeros(T,n,1)   
     ########################################
     # Inversion
     ########################################
@@ -34,6 +28,5 @@ function posi!(X::AbstractMatrix{T}) where {T}
         @views LAPACK.trtrs!('U', 'N', 'N', X[1:i,1:i], v[1:i])
         X[i,1:i] = conj(v[1:i])
     end
-    for i=1:n for j=i+1:n X[i,j] = X[j,i]' end end
     return X
 end

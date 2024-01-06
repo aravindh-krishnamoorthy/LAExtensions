@@ -6,7 +6,7 @@ using LinearAlgebra
 # posi:
 # Positive definite matrix inverse
 ########################################
-include("../posi/posi.jl")
+include("../potri2/potri2.jl")
 ########################################
 # sqrtm:
 # Matrix square root

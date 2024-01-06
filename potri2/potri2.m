@@ -4,7 +4,7 @@
 % Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function Y = posi(X)
+function Y = potri2(X)
 
 n = size(X,1) ;
 

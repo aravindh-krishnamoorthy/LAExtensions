@@ -11,7 +11,8 @@ using LinearAlgebra
 # "Matrix Inversion Using Cholesky Decomposition", by Aravindh Krishnamoorthy
 #   and Deepak Menon, arXiv:1111.4144.
 ################################################################################
-
+# Reference version
+################################################################################
 function potri2!(X::AbstractMatrix{T}) where {T}
     n = size(X,1)
     v = zeros(T,n,1)   
@@ -29,5 +30,22 @@ function potri2!(X::AbstractMatrix{T}) where {T}
         X[i,1:i] = conj(v[1:i])
     end
     for i=1:n for j=i+1:n X[i,j] = X[j,i]' end end
+    return X
+end
+
+################################################################################
+# Invert a positive definite matrix using the algorithm in
+# "Matrix Inversion Using Cholesky Decomposition", by Aravindh Krishnamoorthy
+#   and Deepak Menon, arXiv:1111.4144.
+################################################################################
+# Fortran version
+################################################################################
+function dpotri2!(X::AbstractMatrix{T}) where {T}
+    # DPOTRI2(UPLO, N, A, LDA, INFO)
+    N = size(X,1)
+    INFO = Ref{Int64}()
+    ccall((:dpotri2_, "./potri2.so"), Cvoid,
+        (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
+        'U', N, X, N, INFO, 1)
     return X
 end

@@ -13,24 +13,54 @@ using LinearAlgebra
 ################################################################################
 # Reference version
 ################################################################################
-function potri2!(X::AbstractMatrix{T}) where {T}
+function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     n = size(X,1)
-    v = zeros(T,n,1)   
-    ########################################
-    # Inversion
-    ########################################
-    v[n] = 1/X[n,n]
-    @views LAPACK.trtrs!('U', 'N', 'N', X[1:n,1:n], v)
-    X[n,1:n] = conj(v)
-    for i=n-1:-1:1
-        fill!(v, 0)
-        v[i] = 1/X[i,i]
-        @views BLAS.gemm!('N', 'N', T(-1), X[1:i,i+1:n], X[i+1:n,i], T(+1), v[1:i])
-        @views LAPACK.trtrs!('U', 'N', 'N', X[1:i,1:i], v[1:i])
-        X[i,1:i] = conj(v[1:i])
+    d = diag(X)
+    if uplo == 'U'
+        for j = 1:n
+            X[j,j] = 1/X[j,j]
+            for i = j+1:n
+                X[i,j] = 0
+            end
+        end
+        for j = n:-1:1
+            for k = n:-1:j+1
+                for i=1:j
+                    X[j,i] = X[j,i] - X[i,k]*X[k,j]
+                end
+            end
+            for k = j:-1:1
+                X[j,k] = conj(X[j,k]/d[k])
+                for i = 1:k-1
+                    X[j,i] = X[j,i] - X[i,k]*conj(X[j,k])
+                end
+            end
+        end
+        for i=1:n for j=i+1:n X[i,j] = X[j,i]' end end
+        return X
+    else # uplo == 'L'
+        for j = 1:n
+            X[j,j] = 1/X[j,j]
+            for i = 1:j-1
+                X[i,j] = 0
+            end
+        end
+        for j = n:-1:1
+            for k = n:-1:j+1
+                for i = 1:j
+                    X[i,j] = X[i,j] - X[k,i]*X[j,k]
+                end
+            end
+            for k = j:-1:1
+                X[k,j] = conj(X[k,j]/d[k])
+                for i = 1:k-1
+                    X[i,j] = X[i,j] - X[k,i]*conj(X[k,j])
+                end
+            end
+        end
+        for i=1:n for j=1:i-1 X[i,j] = X[j,i]' end end
+        return X
     end
-    for i=1:n for j=i+1:n X[i,j] = X[j,i]' end end
-    return X
 end
 
 ################################################################################

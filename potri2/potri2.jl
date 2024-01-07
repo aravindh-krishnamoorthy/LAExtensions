@@ -28,5 +28,6 @@ function potri2!(X::AbstractMatrix{T}) where {T}
         @views LAPACK.trtrs!('U', 'N', 'N', X[1:i,1:i], v[1:i])
         X[i,1:i] = conj(v[1:i])
     end
+    for i=1:n for j=i+1:n X[i,j] = X[j,i]' end end
     return X
 end

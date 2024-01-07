@@ -35,9 +35,9 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
         V(I) = 1/A(I,I)
         CALL DGEMM('N', 'N', I, 1, N-I, -ONE, A(1, I+1), N, A(I+1, I), N, ONE, V, I)
         CALL DTRTRS('U', 'N', 'N', I, 1, A, N, V, I, INFO)
-        DO J = 1, N
+        DO J = 1, I
             A(I,J) = V(J)
-        END DO   
+        END DO
     END DO
     DO I = 1, N
         DO J = I+1, N

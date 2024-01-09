@@ -70,12 +70,12 @@ end
 ################################################################################
 # Fortran version
 ################################################################################
-function dpotri2!(X::AbstractMatrix{T}) where {T}
+function dpotri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     # DPOTRI2(UPLO, N, A, LDA, INFO)
     N = size(X,1)
     INFO = Ref{Int64}()
     ccall((:dpotri2_, "./potri2.so"), Cvoid,
         (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
-        'U', N, X, N, INFO, 1)
+        uplo, N, X, N, INFO, 1)
     return X
 end

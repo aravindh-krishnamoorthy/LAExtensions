@@ -18,6 +18,8 @@ for N in [8, 32, 64, 1000]
     X0 = LAPACK.potri!('U', copy(U))
     X1 = MatrixAlgorithms.potri2!('U', copy(U))
     display(norm(triu(X1) - X0))
+    X1 = MatrixAlgorithms.potri2!('L', copy(L))
+    display(norm(triu(X1) - X0))
     X1 = MatrixAlgorithms.dpotri2!('U', copy(U))
     display(norm(triu(X1) - X0))
     X1 = MatrixAlgorithms.dpotri2!('L', copy(L))
@@ -25,14 +27,7 @@ for N in [8, 32, 64, 1000]
     # Timing
     @btime LAPACK.potri!('U', copy($U)) ;
     @btime MatrixAlgorithms.potri2!('U', copy($U)) ;
+    @btime MatrixAlgorithms.potri2!('L', copy($L)) ;
     @btime MatrixAlgorithms.dpotri2!('U', copy($U)) ;
     @btime MatrixAlgorithms.dpotri2!('L', copy($L)) ;
-
-    # # Complex
-    # X = complex.(rand(N, N), randn(N, N))
-    # X = X*X'
-    # U = Matrix(cholesky(X).U)
-    # X0 = LAPACK.potri!('U', copy(U))
-    # X1 = MatrixAlgorithms.potri2!(copy(U))
-    # display(norm(triu(X1) - X0))
 end

@@ -1,6 +1,6 @@
 # MatrixAlgorithms
 
-_Staging area for matrix algebra algorithms in **M**ATLAB, **J**ulia, **F**ortran, and **C**/C++_
+_Staging area for matrix algebra algorithms in **M**ATLAB, **J**ulia, **F**ortran, **R**ust, and **C**/C++_
 
 <div align="center">
 

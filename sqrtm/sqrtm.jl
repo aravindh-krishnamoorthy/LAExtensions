@@ -149,8 +149,6 @@ end
             sizes[i] = 1
         end
     end
-    display(n)
-    display(sizes)
     # Algorithm 4.3 in Reference [1]
     Δ = I(Bₘₐₓ^2)
     M_L₀ = zeros(T,Bₘₐₓ^2,Bₘₐₓ^2)
@@ -158,8 +156,8 @@ end
     for k = 1:n-1
         for i = 1:n-k
             if sizes[i] == 0 || sizes[i+k] == 0 continue end
-            k₁, k₂ = i+1+(sizes[i+1]==0), i+k-1
             i₁, i₂, j₁, j₂, s₁, s₂ = i, i+sizes[i]-1, i+k, i+k+sizes[i+k]-1, sizes[i], sizes[i+k]
+            k₁, k₂ = i+s₁, i+k-1
             L₀ = M_L₀[1:s₁*s₂,1:s₁*s₂]
             L₁ = M_L₁[1:s₁*s₂,1:s₁*s₂]
             if s₁ == 1 && s₂ == 1

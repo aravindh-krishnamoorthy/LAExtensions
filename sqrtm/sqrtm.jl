@@ -61,6 +61,11 @@ function sqrtm(A::AbstractMatrix{T}) where {T}
                     i = i + 1
                 end
             end
+            if i == n
+                if U[i,i] < 0
+                    negative = true
+                end
+            end
         end
         if negative
             Q = _sqrt_quasi_triu!(complex.(U))
@@ -110,7 +115,7 @@ end
 # NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
-@views function _sqrt_quasi_triu!(A::AbstractMatrix{T}; Bₘₐₓ::Integer = 4) where {T}
+@views function _sqrt_quasi_triu!(A::AbstractMatrix{T}; Bₘₐₓ::Integer = 8) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
     # Choose complex or real dot product based on T
@@ -127,6 +132,10 @@ end
             _sqrt_quasi_triu!(A[i:in,i:in])
             sizes[i] = in-i+1
             i = in + 1
+        end
+        if i == n
+            A[i,i] = sqrt(A[i,i])
+            sizes[i] = 1
         end
     else
         # Square roots of 1x1 and 2x2 diagonal blocks

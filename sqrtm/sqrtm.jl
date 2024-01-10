@@ -149,6 +149,7 @@ end
             sizes[i] = 1
         end
     end
+    @assert sum(sizes) == n
     # Algorithm 4.3 in Reference [1]
     Δ = I(Bₘₐₓ^2)
     M_L₀ = zeros(T,Bₘₐₓ^2,Bₘₐₓ^2)

@@ -115,54 +115,34 @@ end
 # NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
-@views function _sqrt_quasi_triu!(A::AbstractMatrix{T}; Bₘₐₓ::Integer = 8) where {T}
+@views function _sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
     # Choose complex or real dot product based on T
     dot = T <: Complex ? BLAS.dotu : BLAS.dot
-    # Block algorithm
-    sizes = zeros(Int,n)
-    if n > Bₘₐₓ
-        i = 1
-        while i < n
-            in = min(i+Bₘₐₓ-1,n)
-            if in < n && !iszero(A[in+1,in])
-                in -= 1
-            end
-            _sqrt_quasi_triu!(A[i:in,i:in])
-            sizes[i] = in-i+1
-            i = in + 1
-        end
-        if i == n
+    # Square roots of 1x1 and 2x2 diagonal blocks
+    i = 1
+    sizes = ones(Int,n)
+    while i < n
+        if !iszero(A[i+1,i])
+            _sqrt_2x2!(A[i:i+1,i:i+1])
+            sizes[i] = 2
+            sizes[i+1] = 0
+            i += 2
+        else
             A[i,i] = sqrt(A[i,i])
             sizes[i] = 1
-        end
-    else
-        # Square roots of 1x1 and 2x2 diagonal blocks
-        i = 1
-        sizes = ones(Int,n)
-        while i < n
-            if !iszero(A[i+1,i])
-                _sqrt_2x2!(A[i:i+1,i:i+1])
-                sizes[i] = 2
-                sizes[i+1] = 0
-                i += 2
-            else
-                A[i,i] = sqrt(A[i,i])
-                sizes[i] = 1
-                i += 1
-            end
-        end
-        if i == n
-            A[n,n] = sqrt(A[n,n])
-            sizes[i] = 1
+            i += 1
         end
     end
-    @assert sum(sizes) == n
+    if i == n
+        A[n,n] = sqrt(A[n,n])
+        sizes[i] = 1
+    end
     # Algorithm 4.3 in Reference [1]
-    Δ = I(Bₘₐₓ^2)
-    M_L₀ = zeros(T,Bₘₐₓ^2,Bₘₐₓ^2)
-    M_L₁ = zeros(T,Bₘₐₓ^2,Bₘₐₓ^2)
+    Δ = I(4)
+    M_L₀ = zeros(T,4,4)
+    M_L₁ = zeros(T,4,4)
     for k = 1:n-1
         for i = 1:n-k
             if sizes[i] == 0 || sizes[i+k] == 0 continue end

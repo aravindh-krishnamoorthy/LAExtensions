@@ -23,7 +23,7 @@ using LinearAlgebra
 function sqrtm(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("sqrt: Matrix A must be square."))
-    symmetric = issymmetric(A)
+    symmetric = ishermitian(A)
     if symmetric
         e, V = eigen(A)
         negative = isreal(e) && any(e .< 0)

@@ -141,6 +141,7 @@ end
     end
     # Algorithm 4.3 in Reference [1]
     Δ = I(4)
+    M_v = zeros(T,4*4,1)
     M_L₀ = zeros(T,4,4)
     M_L₁ = zeros(T,4,4)
     for k = 1:n-1
@@ -150,6 +151,7 @@ end
             k₁, k₂ = i+s₁, i+k-1
             L₀ = M_L₀[1:s₁*s₂,1:s₁*s₂]
             L₁ = M_L₁[1:s₁*s₂,1:s₁*s₂]
+            v = M_v[1:s₁*s₂]
             if s₁ == 1 && s₂ == 1
                 Bᵢⱼ⁽⁰⁾ = dot(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
                 A[i₁,j₁] = (A[i₁,j₁] - Bᵢⱼ⁽⁰⁾)/(A[i₁,i₁] + A[j₁,j₁])
@@ -158,7 +160,9 @@ end
                 # Solve Uᵢ,ᵢ₊ₖ using Reference [1, (4.10)]
                 kron!(L₀, Δ[1:s₂,1:s₂], A[i₁:i₂,i₁:i₂])
                 L₀ .+= kron!(L₁, transpose(A[j₁:j₂,j₁:j₂]), Δ[1:s₁,1:s₁])
-                ldiv!(lu!(L₀), A[i₁:i₂,j₁:j₂][:])
+                copyto!(v, A[i₁:i₂,j₁:j₂][:])
+                LAPACK.gesv!(L₀, v)
+                copyto!(A[i₁:i₂,j₁:j₂][:], v)
             end
         end
     end

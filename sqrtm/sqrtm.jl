@@ -157,6 +157,7 @@ end
                 A[i₁,j₁] = (A[i₁,j₁] - Bᵢⱼ⁽⁰⁾)/(A[i₁,i₁] + A[j₁,j₁])
             else
                 BLAS.gemm!('N', 'N', T(-1.0), A[i₁:i₂,k₁:k₂], A[k₁:k₂,j₁:j₂], T(+1.0), A[i₁:i₂,j₁:j₂])
+                # TODO: use trsyl or explicit formula to speed up solution
                 # Solve Uᵢ,ᵢ₊ₖ using Reference [1, (4.10)]
                 kron!(L₀, Δ[1:s₂,1:s₂], A[i₁:i₂,i₁:i₂])
                 L₀ .+= kron!(L₁, transpose(A[j₁:j₂,j₁:j₂]), Δ[1:s₁,1:s₁])

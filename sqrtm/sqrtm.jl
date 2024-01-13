@@ -57,30 +57,6 @@ function sqrtm(A::AbstractMatrix{T}) where {T}
     end
 end
 
-# Square root of a 2x2 real-valued matrix with complex conjugate eigenvalues and equal diagonal values.
-# Note: that T can be either <: Real or <: Complex but the values must be real, i.e., imaginary part zero.
-# Reference [1]: Smith, M. I. (2003). A Schur Algorithm for Computing Matrix pth Roots.
-#   SIAM Journal on Matrix Analysis and Applications (Vol. 24, Issue 4, pp. 971–989).
-#   https://doi.org/10.1137/s0895479801392697
-function _sqrt_2x2!(A::AbstractMatrix{T}) where {T}
-    @assert LinearAlgebra.checksquare(A) == 2
-    @inbounds begin
-        (A[1,1] == A[2,2]) || throw(ArgumentError("_sqrt_2x2!: Matrix A must have equal diagonal values."))
-        p = real(A[1,2]*A[2,1])
-        (p < 0) || throw(ArgumentError("_sqrt_2x2!: Matrix A must have complex conjugate eigenvalues."))
-        μ = sqrt(-p)
-        r = sqrt(hypot(A[1,1], μ))
-        θ = atan(μ, real(A[1,1]))
-        s, c = sincos(θ/2)
-        α, β′ = r*c, r*s/µ
-        A[1,1] = α
-        A[2,2] = α
-        A[1,2] = β′*A[1,2]
-        A[2,1] = β′*A[2,1]
-    end
-    return A
-end
-
 ################################################################################
 #
 # Square root of a quasi upper triangular matrix (output of Schur decomposition)
@@ -91,7 +67,7 @@ end
 # NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
-@views function _sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T}
+@views @inbounds function _sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
     # Choose complex or real dot product based on T
@@ -101,7 +77,15 @@ end
     sizes = ones(Int,n)
     while i < n
         if !iszero(A[i+1,i])
-            _sqrt_2x2!(A[i:i+1,i:i+1])
+            μ = sqrt(-real(A[i,i+1]*A[i+1,i]))
+            r = sqrt(hypot(A[i,i], μ))
+            θ = atan(μ, real(A[i,i]))
+            s, c = sincos(θ/2)
+            α, β′ = r*c, r*s/µ
+            A[i,i] = α
+            A[i+1,i+1] = α
+            A[i,i+1] = β′*A[i,i+1]
+            A[i+1,i] = β′*A[i+1,i]    
             sizes[i] = 2
             sizes[i+1] = 0
             i += 2

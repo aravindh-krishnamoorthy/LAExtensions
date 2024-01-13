@@ -38,46 +38,22 @@ function sqrtm(A::AbstractMatrix{T}) where {T}
             Q = Diagonal(sqrt.(e))
             return V*Q*V'
         end
-    else
-        U, Z = schur(A)
-        # Check if lifting to complex field is necessary.
-        # Lifting is only necessary if the negative diagonal element
-        #   corresponds to a real eigenvalue. Negative diagonal elements
-        #   corresponding to complex-conjugate pair is fine and doesn't
-        #   need lifting.
-        i = 1
+    elseif isreal(A)
+        S = schur(real(A))
         negative = false
-        if isreal(U)
-            while i < n
-                if U[i,i] < 0
-                    if iszero(U[i+1,i])
-                        negative = true
-                        break
-                    else
-                        i = i + 2
-                        continue
-                    end
-                else
-                    i = i + 1
-                end
-            end
-            if i == n
-                if U[i,i] < 0
-                    negative = true
-                end
+        for i = 1:n
+            if isreal(S.values[i]) && real(S.values[i]) < 0
+                negative = true
+                break
             end
         end
         if negative
-            Q = _sqrt_quasi_triu!(complex.(U))
-            if isreal(Z)
-                return complex.(Z*real(Q)*Z', Z*imag(Q)*Z')
-            else
-                return Z*Q*Z'
-            end
-        else
-            Q = _sqrt_quasi_triu!(U)
-            return Z*Q*Z'
+            S = Schur{Complex}(S)
         end
+        return S.Z*_sqrt_quasi_triu!(S.T)*S.Z'
+    else # complex A
+        S = schur(A)
+        return S.Z*_sqrt_quasi_triu!(S.T)*S.Z'
     end
 end
 
@@ -141,7 +117,6 @@ end
     end
     # Algorithm 4.3 in Reference [1]
     Δ = I(4)
-    M_v = zeros(T,4*4,1)
     M_L₀ = zeros(T,4,4)
     M_L₁ = zeros(T,4,4)
     for k = 1:n-1
@@ -151,19 +126,13 @@ end
             k₁, k₂ = i+s₁, i+k-1
             L₀ = M_L₀[1:s₁*s₂,1:s₁*s₂]
             L₁ = M_L₁[1:s₁*s₂,1:s₁*s₂]
-            v = M_v[1:s₁*s₂]
             if s₁ == 1 && s₂ == 1
                 Bᵢⱼ⁽⁰⁾ = dot(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
                 A[i₁,j₁] = (A[i₁,j₁] - Bᵢⱼ⁽⁰⁾)/(A[i₁,i₁] + A[j₁,j₁])
             else
                 BLAS.gemm!('N', 'N', T(-1.0), A[i₁:i₂,k₁:k₂], A[k₁:k₂,j₁:j₂], T(+1.0), A[i₁:i₂,j₁:j₂])
-                # TODO: use trsyl or explicit formula to speed up solution
-                # Solve Uᵢ,ᵢ₊ₖ using Reference [1, (4.10)]
-                kron!(L₀, Δ[1:s₂,1:s₂], A[i₁:i₂,i₁:i₂])
-                L₀ .+= kron!(L₁, transpose(A[j₁:j₂,j₁:j₂]), Δ[1:s₁,1:s₁])
-                copyto!(v, A[i₁:i₂,j₁:j₂][:])
-                LAPACK.gesv!(L₀, v)
-                copyto!(A[i₁:i₂,j₁:j₂][:], v)
+                _, scale = LAPACK.trsyl!('N', 'N', A[i₁:i₂,i₁:i₂], A[j₁:j₂,j₁:j₂], A[i₁:i₂,j₁:j₂])
+                rmul!(A[i₁:i₂,j₁:j₂], inv(scale))
             end
         end
     end

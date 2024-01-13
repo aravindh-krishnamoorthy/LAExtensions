@@ -85,7 +85,7 @@ end
             A[i,i] = α
             A[i+1,i+1] = α
             A[i,i+1] = β′*A[i,i+1]
-            A[i+1,i] = β′*A[i+1,i]    
+            A[i+1,i] = β′*A[i+1,i]
             sizes[i] = 2
             sizes[i+1] = 0
             i += 2

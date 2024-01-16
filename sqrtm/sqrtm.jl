@@ -134,15 +134,12 @@ end
 #   SIAM Journal on Matrix Analysis and Applications (Vol. 24, Issue 4, pp. 971–989).
 #   https://doi.org/10.1137/s0895479801392697
 #
-# VERSION: Eventual FORTRAN version
-# NOTE: It is assumed that the diagonal elements of A have a square root in type T
+# VERSION: Eventual FORTRAN version (Complex valued)
 #
 ################################################################################
-@views @inbounds function d_sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T}
+@views @inbounds function z_sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T<:Complex}
     m, n = size(A)
     (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
-    # Choose complex or real dot product based on T
-    dot = T <: Complex ? BLAS.dotu : BLAS.dot
     # Square roots of 1x1 and 2x2 diagonal blocks
     i = 1
     sizes = ones(Int,n)
@@ -182,7 +179,7 @@ end
             L₀ = M_L₀[1:s₁*s₂,1:s₁*s₂]
             L₁ = M_L₁[1:s₁*s₂,1:s₁*s₂]
             if s₁ == 1 && s₂ == 1
-                Bᵢⱼ⁽⁰⁾ = dot(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
+                Bᵢⱼ⁽⁰⁾ = BLAS.dotu(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
                 A[i₁,j₁] = (A[i₁,j₁] - Bᵢⱼ⁽⁰⁾)/(A[i₁,i₁] + A[j₁,j₁])
             else
                 # Compute Bᵢⱼ⁽⁰⁾ and update A[i₁:i₂,j₁:j₂]

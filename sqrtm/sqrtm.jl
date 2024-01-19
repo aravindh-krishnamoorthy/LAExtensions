@@ -137,7 +137,7 @@ end
 # VERSION: Eventual FORTRAN version (Complex valued)
 #
 ################################################################################
-@views @inbounds function z_sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T<:Complex}
+@views @inbounds function ztrsr!(A::AbstractMatrix{T}) where {T<:Complex}
     m, n = size(A)
     (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
     # Square roots of 1x1 and 2x2 diagonal blocks

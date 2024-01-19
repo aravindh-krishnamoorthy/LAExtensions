@@ -24,15 +24,15 @@ for iter = 1:1000
             @assert X1*X1 ≈ X+N*I(N)
             X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N))
             @assert X1*X1 ≈ X+X'+N*I(N)
-            # Complex z_sqrt_quasi_triu!
+            # Complex ztrsr!
             X = complex.(randn(N,N),randn(N,N))
-            X1 = MatrixAlgorithms.sqrtm(X, MatrixAlgorithms.z_sqrt_quasi_triu!)
+            X1 = MatrixAlgorithms.sqrtm(X, MatrixAlgorithms.ztrsr!)
             @assert X1*X1 ≈ X
-            X1 = MatrixAlgorithms.sqrtm(X+X', MatrixAlgorithms.z_sqrt_quasi_triu!)
+            X1 = MatrixAlgorithms.sqrtm(X+X', MatrixAlgorithms.ztrsr!)
             @assert X1*X1 ≈ X+X'
-            X1 = MatrixAlgorithms.sqrtm(X+N*I(N), MatrixAlgorithms.z_sqrt_quasi_triu!)
+            X1 = MatrixAlgorithms.sqrtm(X+N*I(N), MatrixAlgorithms.ztrsr!)
             @assert X1*X1 ≈ X+N*I(N)
-            X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N), MatrixAlgorithms.z_sqrt_quasi_triu!)
+            X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N), MatrixAlgorithms.ztrsr!)
             @assert X1*X1 ≈ X+X'+N*I(N)
         end
     end

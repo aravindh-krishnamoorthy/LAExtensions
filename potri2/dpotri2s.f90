@@ -10,6 +10,8 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
+    EXTERNAL           DAXPY
+
     DOUBLE PRECISION   V(N)
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
@@ -27,14 +29,16 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         DO J = N, 1, -1
             DO K = N, J+1, -1
                 DO I = 1, J
-                    A(J,I) = A(J,I) - A(I,K)*A(K,J)
+                     A(J,I) = A(J,I) - A(I,K)*A(K,J)
                 END DO
+                ! CALL DAXPY(J, -A(K,J), A(1,K), 1, A(J,1), N)
             END DO
             DO K = J, 1, -1
                 A(J,K) = A(J,K)/V(K)
                 DO I = 1, K-1
                     A(J,I) = A(J,I) - A(I,K)*A(J,K)
                 END DO
+                ! CALL DAXPY(K-1, -A(J,K), A(1,K), 1, A(J,1), N)
             END DO
         END DO
         DO I = 1, N
@@ -54,12 +58,14 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                 DO I = 1, J
                     A(I,J) = A(I,J) - A(K,I)*A(J,K)
                 END DO
+                ! CALL DAXPY(J, -A(J,K), A(K,1), N, A(1,J), 1)
             END DO
             DO K = J, 1, -1
                 A(K,J) = A(K,J)/V(K)
                 DO I = 1, K-1
                     A(I,J) = A(I,J) - A(K,I)*A(K,J)
                 END DO
+                ! CALL DAXPY(K-1, -A(K,J), A(K,1), N, A(1,J), 1)
             END DO
         END DO
         DO I = 1, N

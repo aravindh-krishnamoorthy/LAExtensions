@@ -29,7 +29,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         DO J = N, 1, -1
             DO K = N, J+1, -1
                 DO I = 1, J
-                     A(J,I) = A(J,I) - A(I,K)*A(K,J)
+                    A(J,I) = A(J,I) - A(I,K)*A(K,J)
                 END DO
                 ! CALL DAXPY(J, -A(K,J), A(1,K), 1, A(J,1), N)
             END DO

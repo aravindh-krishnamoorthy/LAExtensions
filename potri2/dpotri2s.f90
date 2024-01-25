@@ -15,11 +15,11 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 
     DO I = 1, N
-        V(I) = A(I,I)
+        V(I) = 1/A(I,I)
     END DO
     IF (UPLO.EQ.'U') THEN
         DO J = 1, N
-            A(J,J) = 1/A(J,J)
+            A(J,J) = V(J)
             DO I = J+1, N
                 A(I,J) = 0
             END DO
@@ -31,7 +31,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                 END DO
             END DO
             DO K = J, 1, -1
-                A(J,K) = A(J,K)/V(K)
+                A(J,K) = A(J,K)*V(K)
                 DO I = 1, K-1
                     A(J,I) = A(J,I) - A(I,K)*A(J,K)
                 END DO
@@ -44,7 +44,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         END DO
     ELSE ! UPLO.EQ.'L'
         DO J = 1, N
-            A(J,J) = 1/A(J,J)
+            A(J,J) = V(J)
             DO I = 1, J-1
                 A(I,J) = 0
             END DO
@@ -56,7 +56,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                 END DO
             END DO
             DO K = J, 1, -1
-                A(K,J) = A(K,J)/V(K)
+                A(K,J) = A(K,J)*V(K)
                 DO I = 1, K-1
                     A(I,J) = A(I,J) - A(K,I)*A(K,J)
                 END DO
@@ -68,7 +68,6 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
             END DO
         END DO
     END IF
-
     INFO = 0
     RETURN
 END

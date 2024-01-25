@@ -11,7 +11,8 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     DOUBLE PRECISION   A( LDA, * )
 
     INTEGER            ILAENV
-    EXTERNAL           ILAENV
+    EXTERNAL           DPOTRI2S
+    EXTERNAL           ILAENV, DSYMM, DTRTRI
 
     integer            NB
     DOUBLE PRECISION   V(N)
@@ -19,19 +20,15 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 
     ! Reuse ILAENV for DTRITRI
-    NB = ILAENV(1, 'DTRITRI', UPLO//'N', N, -1, -1, -1)
+    ! NB = ILAENV(1, 'DTRITRI', UPLO//'N', N, -1, -1, -1)
+    NB = 2
     IF (NB.LE.1 .OR. NB.GE.N) THEN
-
         ! Scalar version
         CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
-
     ELSE
-
-        ! Future block version
+        ! Block version
         CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
-
     END IF
-
     INFO = 0
     RETURN
 END

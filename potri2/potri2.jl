@@ -71,16 +71,24 @@ end
 ################################################################################
 # Fortran version
 ################################################################################
-function dpotri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
+function dpotri2!(uplo::Char, X::AbstractMatrix{T}; rl::Bool=true) where {T}
     # DPOTRI2(UPLO, N, A, LDA, INFO)
     N = size(X,1)
     INFO = Ref{Int64}()
-    # lib = Libdl.dlopen("./potri2.so")
-    # dpotri2 = Libdl.dlsym(lib, :dpotri2_)
-    # ccall(dpotri2, Cvoid,
-    ccall((:dpotri2_, "./potri2.so"), Cvoid,
-        (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
-        uplo, N, X, N, INFO, 1)
-    # Libdl.dlclose(lib)
+    if rl == true
+        lib = Libdl.dlopen("./potri2.so")
+        dpotri2 = Libdl.dlsym(lib, :dpotri2_)
+        ccall(dpotri2, Cvoid,
+            (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
+            uplo, N, X, N, INFO, 1)
+    else
+        ccall((:dpotri2_, "./potri2.so"), Cvoid,
+            (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
+            uplo, N, X, N, INFO, 1)
+    end
+    
+    if rl == true
+        Libdl.dlclose(lib)
+    end
     return X
 end

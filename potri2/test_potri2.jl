@@ -28,6 +28,6 @@ for N in [8, 32, 64, 1000]
     @btime LAPACK.potri!('U', copy($U)) ;
     @btime MatrixAlgorithms.potri2!('U', copy($U)) ;
     @btime MatrixAlgorithms.potri2!('L', copy($L)) ;
-    @btime MatrixAlgorithms.dpotri2!('U', copy($U)) ;
-    @btime MatrixAlgorithms.dpotri2!('L', copy($L)) ;
+    @btime MatrixAlgorithms.dpotri2!('U', copy($U); rl=false) ;
+    @btime MatrixAlgorithms.dpotri2!('L', copy($L); rl=false) ;
 end

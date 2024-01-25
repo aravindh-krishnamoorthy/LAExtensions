@@ -3,14 +3,14 @@ module MatrixAlgorithms
 using LinearAlgebra
 
 ########################################
-# posi:
+# potri:
 # Positive definite matrix inverse
 ########################################
 include("../potri2/potri2.jl")
 ########################################
-# sqrtm:
+# trsr:
 # Matrix square root
 ########################################
-include("../sqrtm/sqrtm.jl")
+include("../trsr/trsr.jl")
 
 end

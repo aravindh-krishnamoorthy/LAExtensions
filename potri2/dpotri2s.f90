@@ -4,13 +4,11 @@
 ! Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
 !###############################################################################
 
-SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
+SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
 
     CHARACTER          UPLO
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
-
-    EXTERNAL DTRTRS, DGEMM
 
     DOUBLE PRECISION   V(N)
     DOUBLE PRECISION   ONE, ZERO

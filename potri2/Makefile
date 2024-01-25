@@ -1,7 +1,12 @@
 .PHONY: all
 
+SHLIB := potri2.so
+SRCS  := dpotri2.f90 dpotri2s.f90
+FOPTS := -Ofast -march=native -masm=intel -fverbose-asm -fPIC -shared -save-temps
+FLIBS := -llapack -lblas -lgfortran -lm
+
 all:
-	gfortran -Ofast -march=native -masm=intel -fverbose-asm -fPIC -shared -save-temps -o potri2.so dpotri2.f90 -L/usr/local/lib -llapack -lblas -lgfortran -lm
+	gfortran $(FOPTS) -o $(SHLIB) $(SRCS) -L/usr/local/lib $(FLIBS)
 
 mkl:
-	gfortran -Ofast -march=native -masm=intel -fverbose-asm -fPIC -shared -save-temps -o potri2.so dpotri2.f90 -L/usr/lib/x86_64-linux-gnu/mkl -llapack -lblas -lgfortran -lm
+	gfortran $(FOPTS) -o $(SHLIB) $(SRCS) -L/usr/lib/x86_64-linux-gnu/mkl $(FLIBS)

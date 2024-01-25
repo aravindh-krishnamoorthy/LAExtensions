@@ -20,7 +20,7 @@ using LinearAlgebra
 #         triangular Schur matrix does not have a square root in type T
 #
 ################################################################################
-function sqrtm(A::AbstractMatrix{T}, _sqrt_quasi_triu!::Function = _sqrt_quasi_triu!) where {T}
+function sqrtm(A::AbstractMatrix{T}, trsr::Function = trsr!) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("sqrt: Matrix A must be square."))
     symmetric = ishermitian(A)
@@ -50,10 +50,10 @@ function sqrtm(A::AbstractMatrix{T}, _sqrt_quasi_triu!::Function = _sqrt_quasi_t
         if negative
             S = Schur{Complex}(S)
         end
-        return S.Z*_sqrt_quasi_triu!(S.T)*S.Z'
+        return S.Z*trsr!(S.T)*S.Z'
     else # complex A
         S = schur(A)
-        return S.Z*_sqrt_quasi_triu!(S.T)*S.Z'
+        return S.Z*trsr!(S.T)*S.Z'
     end
 end
 
@@ -68,9 +68,9 @@ end
 # NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
-@views @inbounds function _sqrt_quasi_triu!(A::AbstractMatrix{T}) where {T}
+@views @inbounds function trsr!(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
-    (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
+    (m == n) || throw(ArgumentError("trsr!: Matrix A must be square."))
     # Choose complex or real dot product based on T
     dot = T <: Complex ? BLAS.dotu : BLAS.dot
     # Square roots of 1x1 and 2x2 diagonal blocks
@@ -139,7 +139,7 @@ end
 ################################################################################
 @views @inbounds function ztrsr!(A::AbstractMatrix{T}) where {T<:Complex}
     m, n = size(A)
-    (m == n) || throw(ArgumentError("_sqrt_quasi_triu!: Matrix A must be square."))
+    (m == n) || throw(ArgumentError("trsr!: Matrix A must be square."))
     # Square roots of 1x1 and 2x2 diagonal blocks
     i = 1
     sizes = ones(Int,n)

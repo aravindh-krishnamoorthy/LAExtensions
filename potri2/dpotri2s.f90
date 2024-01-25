@@ -25,8 +25,8 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
             END DO
         END DO
         DO J = N, 1, -1
-            DO K = N, J+1, -1
-                DO I = 1, J
+            DO I = 1, J
+                DO K = N, J+1, -1
                     A(J,I) = A(J,I) - A(I,K)*A(K,J)
                 END DO
             END DO
@@ -50,8 +50,8 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
             END DO
         END DO
         DO J = N, 1, -1
-            DO K = N, J+1, -1
-                DO I = 1, J
+            DO I = 1, J
+                DO K = N, J+1, -1
                     A(I,J) = A(I,J) - A(K,I)*A(J,K)
                 END DO
             END DO

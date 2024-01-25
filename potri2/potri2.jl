@@ -75,11 +75,12 @@ function dpotri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     # DPOTRI2(UPLO, N, A, LDA, INFO)
     N = size(X,1)
     INFO = Ref{Int64}()
-    lib = Libdl.dlopen("./potri2.so")
-    dpotri2 = Libdl.dlsym(lib, :dpotri2_)
-    ccall(dpotri2, Cvoid,
+    # lib = Libdl.dlopen("./potri2.so")
+    # dpotri2 = Libdl.dlsym(lib, :dpotri2_)
+    # ccall(dpotri2, Cvoid,
+    ccall((:dpotri2_, "./potri2.so"), Cvoid,
         (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
         uplo, N, X, N, INFO, 1)
-    Libdl.dlclose(lib)
+    # Libdl.dlclose(lib)
     return X
 end

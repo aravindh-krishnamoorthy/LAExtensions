@@ -15,7 +15,7 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
 
     INTEGER            NB
     ! Configurable block size
-    PARAMETER          (NB = 2)
+    PARAMETER          (NB = 32)
     DOUBLE PRECISION   V(NB,N)
     DOUBLE PRECISION   W(NB,NB)
 

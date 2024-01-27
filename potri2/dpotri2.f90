@@ -15,7 +15,7 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     INTEGER            NB
 
     ! Configurable block size
-    PARAMETER          (NB = 2)
+    PARAMETER          (NB = 32)
 
     IF (NB.LE.1 .OR. NB.GE.N) THEN
         ! Scalar version

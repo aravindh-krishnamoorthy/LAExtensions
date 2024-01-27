@@ -81,14 +81,12 @@ function dpotri2!(uplo::Char, X::AbstractMatrix{T}; rl::Bool=true) where {T}
         ccall(dpotri2, Cvoid,
             (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
             uplo, N, X, N, INFO, 1)
+        Libdl.dlclose(lib)
+        println("Bye")
     else
         ccall((:dpotri2_, "./potri2.so"), Cvoid,
             (Ref{UInt8}, Ref{Int64}, Ptr{Float64}, Ref{Int64}, Ptr{Int64}, Clong),
             uplo, N, X, N, INFO, 1)
-    end
-    
-    if rl == true
-        Libdl.dlclose(lib)
-    end
+    end    
     return X
 end

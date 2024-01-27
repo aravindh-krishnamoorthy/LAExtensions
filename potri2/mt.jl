@@ -1,7 +1,9 @@
+using Random
 using LinearAlgebra
 include("../src/MatrixAlgorithms.jl")
 
-A = randn(4,4)
+rng = MersenneTwister(555);
+A = randn(rng,4,4)
 A = A*A'
 
 T = Matrix(cholesky(A).U) ;

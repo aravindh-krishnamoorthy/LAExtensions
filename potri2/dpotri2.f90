@@ -21,6 +21,7 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
         ! Scalar version
         CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
     ELSE
+        ! Block version
         CALL DPOTRI2B(UPLO, N, A, LDA, INFO)
     END IF
     INFO = 0

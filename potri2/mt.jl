@@ -3,7 +3,7 @@ using LinearAlgebra
 include("../src/MatrixAlgorithms.jl")
 
 rng = MersenneTwister(555);
-A = randn(rng,4,4)
+A = randn(rng,64,64)
 A = A*A'
 
 T = Matrix(cholesky(A).U) ;

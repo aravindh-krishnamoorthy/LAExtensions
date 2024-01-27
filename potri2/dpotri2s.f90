@@ -14,12 +14,10 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 
-    DO I = 1, N
-        V(I) = 1/A(I,I)
-    END DO
     IF (UPLO.EQ.'U') THEN
         DO J = 1, N
-            A(J,J) = V(J)
+            A(J,J) = 1/A(J,J)
+            V(J) = A(J,J)
             DO I = J+1, N
                 A(I,J) = 0
             END DO
@@ -44,7 +42,8 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         END DO
     ELSE ! UPLO.EQ.'L'
         DO J = 1, N
-            A(J,J) = V(J)
+            A(J,J) = 1/A(J,J)
+            V(J) = A(J,J)
             DO I = 1, J-1
                 A(I,J) = 0
             END DO

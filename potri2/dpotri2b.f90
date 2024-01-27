@@ -34,14 +34,18 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
         JB = MIN(NB, N-J+1)
         DO I = 1, J, JB
             DO K = NN, J+1, -JB
-                CALL DGEMM('T', 'T', JB, JB, JB, -1.0D0, A(K,J), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
+                ! CALL DGEMM('T', 'T', JB, JB, JB, -1.0D0, A(K,J), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
+                A(J:J+JB-1,I:I+JB-1) = A(J:J+JB-1,I:I+JB-1) - MATMUL(TRANSPOSE(A(K:K+JB-1,J:J+JB-1)), &
+                                                                TRANSPOSE(A(I:I+JB-1,K:K+JB-1)))
             END DO
         END DO
         DO K = J, 1, -JB
-            CALL DGEMM('N', 'T', JB, JB, JB, 1.0D0, A(J,K), LDA, V(1,K), NB, 0.0D0, W, NB)
-            A(J:J+JB-1, K:K+JB-1) = W(1:JB, 1:JB)
+            ! CALL DGEMM('N', 'T', JB, JB, JB, 1.0D0, A(J,K), LDA, V(1,K), NB, 0.0D0, W, NB)
+            ! A(J:J+JB-1, K:K+JB-1) = W(1:JB, 1:JB)
+            A(J:J+JB-1, K:K+JB-1) = MATMUL(A(J:J+JB-1, K:K+JB-1),TRANSPOSE(V(1:JB,K:K+JB-1)))
             DO I = 1, K-1, JB
-                CALL DGEMM('N', 'T', JB, JB, JB, -1.0D0, A(J,K), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
+                ! CALL DGEMM('N', 'T', JB, JB, JB, -1.0D0, A(J,K), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
+                A(J:J+JB-1,I:I+JB-1) = A(J:J+JB-1,I:I+JB-1) - MATMUL(A(J:J+JB-1,K:K+JB-1),TRANSPOSE(A(I:I+JB-1,K:K+JB-1)))
             END DO
         END DO
     END DO

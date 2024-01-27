@@ -32,11 +32,15 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     NN = ((N-1)/NB)*NB + 1
     DO J = NN, 1, -NB
         JB = MIN(NB, N-J+1)
-        ! [FIRST PART HERE]
+        DO I = 1, J, JB
+            DO K = NN, J+1, -JB
+                CALL DGEMM('T', 'T', JB, JB, JB, -1.0D0, A(K,J), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
+            END DO
+        END DO
         DO K = J, 1, -JB
             CALL DGEMM('N', 'T', JB, JB, JB, 1.0D0, A(J,K), LDA, V(1,K), NB, 0.0D0, W, NB)
             A(J:J+JB-1, K:K+JB-1) = W(1:JB, 1:JB)
-            DO I = 1, K-1, NB
+            DO I = 1, K-1, JB
                 CALL DGEMM('T', 'T', JB, JB, JB, -1.0D0, A(J,K), LDA, A(I,K), LDA, 1.0D0, A(J,I), LDA)
             END DO
         END DO

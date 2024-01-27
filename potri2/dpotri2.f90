@@ -14,7 +14,6 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     EXTERNAL           DTRTRI, DGEMM
 
     INTEGER            NB
-    DOUBLE PRECISION   ONE, ZERO
     ! Configurable block size
     PARAMETER          (NB = 2)
     DOUBLE PRECISION   V(NB,NB)

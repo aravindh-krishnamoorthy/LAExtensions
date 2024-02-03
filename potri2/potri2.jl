@@ -16,13 +16,14 @@ using Libdl
 ################################################################################
 function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     n = size(X,1)
-    d = diag(X)
     if uplo == 'U'
-        for j = 1:n
-            X[j,j] = 1/X[j,j]
-            for i = j+1:n
-                X[i,j] = 0
+        for i = 1:n
+            X[i,i] = 1/X[i,i]
+            for j = i+1:n
+                X[i,j] = X[i,j]*X[i,i]
+                X[j,i] = 0
             end
+            X[i,i] = X[i,i]*X[i,i]
         end
         for j = n:-1:1
             for k = n:-1:j+1
@@ -31,7 +32,7 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
                 end
             end
             for k = j:-1:1
-                X[j,k] = conj(X[j,k]/d[k])
+                X[j,k] = conj(X[j,k])
                 for i = 1:k-1
                     X[j,i] = X[j,i] - X[i,k]*conj(X[j,k])
                 end
@@ -42,9 +43,11 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     else # uplo == 'L'
         for j = 1:n
             X[j,j] = 1/X[j,j]
-            for i = 1:j-1
-                X[i,j] = 0
+            for i = j+1:n
+                X[i,j] = X[i,j]*X[j,j]
+                X[j,i] = 0
             end
+            X[j,j] = X[j,j]*X[j,j]
         end
         for j = n:-1:1
             for k = n:-1:j+1
@@ -53,7 +56,7 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
                 end
             end
             for k = j:-1:1
-                X[k,j] = conj(X[k,j]/d[k])
+                X[k,j] = conj(X[k,j])
                 for i = 1:k-1
                     X[i,j] = X[i,j] - X[k,i]*conj(X[k,j])
                 end

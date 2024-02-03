@@ -10,17 +10,17 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
-    DOUBLE PRECISION   V(N)
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 
     IF (UPLO.EQ.'U') THEN
-        DO J = 1, N
-            A(J,J) = 1/A(J,J)
-            V(J) = A(J,J)
-            DO I = J+1, N
-                A(I,J) = 0
+        DO I = 1,N
+            A(I,I) = 1/A(I,I)
+            DO J = I+1,N
+                A(I,J) = A(I,J)*A(I,I)
+                A(J,I) = 0
             END DO
+            A(I,I) = A(I,I)*A(I,I)
         END DO
         DO J = N, 1, -1
             DO I = 1, J
@@ -29,7 +29,6 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                 END DO
             END DO
             DO K = J, 1, -1
-                A(J,K) = A(J,K)*V(K)
                 DO I = 1, K-1
                     A(J,I) = A(J,I) - A(I,K)*A(J,K)
                 END DO
@@ -43,10 +42,11 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     ELSE ! UPLO.EQ.'L'
         DO J = 1, N
             A(J,J) = 1/A(J,J)
-            V(J) = A(J,J)
-            DO I = 1, J-1
-                A(I,J) = 0
+            DO I = J+1,N
+                A(I,J) = A(I,J)*A(J,J)
+                A(J,I) = 0
             END DO
+            A(J,J) = A(J,J)*A(J,J)
         END DO
         DO J = N, 1, -1
             DO I = 1, J
@@ -55,7 +55,6 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                 END DO
             END DO
             DO K = J, 1, -1
-                A(K,J) = A(K,J)*V(K)
                 DO I = 1, K-1
                     A(I,J) = A(I,J) - A(K,I)*A(K,J)
                 END DO

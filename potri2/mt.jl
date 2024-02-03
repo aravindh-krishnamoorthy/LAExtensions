@@ -3,7 +3,8 @@ using LinearAlgebra
 include("../src/MatrixAlgorithms.jl")
 
 rng = MersenneTwister(555);
-A = randn(rng,64,64)
+N = 1000
+A = randn(rng,N,N)
 A = A*A'
 
 T = Matrix(cholesky(A).U) ;

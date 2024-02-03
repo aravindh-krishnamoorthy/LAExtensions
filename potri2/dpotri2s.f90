@@ -16,7 +16,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     IF (UPLO.EQ.'U') THEN
         DO I = 1,N
             A(I,I) = 1/A(I,I)
-            DO J = I+1,N
+            DO CONCURRENT (J = I+1:N)
                 A(I,J) = A(I,J)*A(I,I)
                 A(J,I) = 0
             END DO
@@ -24,25 +24,25 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         END DO
         DO J = N, 1, -1
             DO K = N, J+1, -1
-                DO I = 1, J
+                DO CONCURRENT (I = 1:J)
                     A(J,I) = A(J,I) - A(I,K)*A(K,J)
                 END DO
             END DO
             DO K = J, 1, -1
-                DO I = 1, K-1
+                DO CONCURRENT (I = 1:K-1)
                     A(J,I) = A(J,I) - A(I,K)*A(J,K)
                 END DO
             END DO
         END DO
-        DO I = 1, N
-            DO J = I+1, N
+        DO CONCURRENT (I = 1:N)
+            DO CONCURRENT (J = I+1:N)
                 A(I,J) = A(J,I)
             END DO
         END DO
     ELSE ! UPLO.EQ.'L'
         DO J = 1, N
             A(J,J) = 1/A(J,J)
-            DO I = J+1,N
+            DO CONCURRENT (I = J+1:N)
                 A(I,J) = A(I,J)*A(J,J)
                 A(J,I) = 0
             END DO
@@ -50,18 +50,18 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
         END DO
         DO J = N, 1, -1
             DO K = N, J+1, -1
-                DO I = 1, J
+                DO CONCURRENT (I = 1:J)
                     A(I,J) = A(I,J) - A(K,I)*A(J,K)
                 END DO
             END DO
             DO K = J, 1, -1
-                DO I = 1, K-1
+                DO CONCURRENT (I = 1:K-1)
                     A(I,J) = A(I,J) - A(K,I)*A(K,J)
                 END DO
             END DO
         END DO
-        DO I = 1, N
-            DO J = 1, I-1
+        DO CONCURRENT (I = 1:N)
+            DO CONCURRENT (J = 1:I-1)
                 A(I,J) = A(J,I)
             END DO
         END DO

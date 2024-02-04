@@ -5,11 +5,13 @@
 !###############################################################################
 
 SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
+    IMPLICIT           NONE
 
     CHARACTER          UPLO
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
+    INTEGER            I, J, K
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 

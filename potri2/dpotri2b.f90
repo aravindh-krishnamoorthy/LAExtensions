@@ -5,10 +5,13 @@
 !###############################################################################
 
 SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
+    IMPLICIT           NONE
 
     CHARACTER          UPLO
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
+
+    INTEGER            NB
 
     ! Configurable block size
     PARAMETER          (NB = 32)

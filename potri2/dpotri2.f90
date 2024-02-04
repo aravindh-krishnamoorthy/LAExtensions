@@ -5,6 +5,7 @@
 !###############################################################################
 
 SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
+    IMPLICIT           NONE
 
     CHARACTER          UPLO
     INTEGER            INFO, LDA, N

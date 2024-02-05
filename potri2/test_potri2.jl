@@ -4,7 +4,7 @@
 # Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
 ################################################################################
 
-using MKL
+# using MKL
 using LinearAlgebra
 using BenchmarkTools
 

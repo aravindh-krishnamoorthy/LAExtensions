@@ -70,15 +70,33 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
             END DO
             A(J,J) = A(J,J)*A(J,J)
         END DO
-        DO J = N, 1, -1
-            DO K = N, J+1, -1
-                DO CONCURRENT (I = 1:J)
-                    A(I,J) = A(I,J) - A(K,I)*A(J,K)
+        NN = ((N-1)/NB)*NB+1
+        DO J = NN, 1, -NB
+            JB = MIN(NB, N-J+1)
+            DO L = J+JB-1, J, -1
+                DO K = N, L+1, -1
+                    DO CONCURRENT (I = J:L)
+                        A(I,L) = A(I,L) - A(K,I)*A(L,K)
+                    END DO
+                END DO
+                DO K = L, J, -1
+                    DO CONCURRENT (I = 1:K-1)
+                        A(I,L) = A(I,L) - A(K,I)*A(K,L)
+                    END DO
                 END DO
             END DO
-            DO K = J, 1, -1
-                DO CONCURRENT (I = 1:K-1)
-                    A(I,J) = A(I,J) - A(K,I)*A(K,J)
+            DO L = J+JB-1, J, -1
+                DO K = N, L+1, -1
+                    DO CONCURRENT (I = 1:J-1)
+                        A(I,L) = A(I,L) - A(K,I)*A(L,K)
+                    END DO
+                END DO
+            END DO
+            DO K = J-1, 1, -1
+                DO I = 1,K-1
+                    DO L = J+JB-1, J, -1
+                        A(I,L) = A(I,L) - A(K,I)*A(K,L)
+                    END DO
                 END DO
             END DO
         END DO

@@ -15,7 +15,7 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     INTEGER            NN, JB, NB
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
-    PARAMETER ( NB = 2 )
+    PARAMETER ( NB = 32 )
 
     IF (UPLO.EQ.'U') THEN
         DO I = 1,N
@@ -47,8 +47,10 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
                         A(L,I) = A(L,I) - A(I,K)*A(K,L)
                     END DO
                 END DO
-                DO K = J-1, 1, -1
-                    DO CONCURRENT (I = 1:K-1)
+            END DO
+            DO K = J-1, 1, -1
+                DO I = 1,K-1
+                    DO L = J+JB-1, J, -1
                         A(L,I) = A(L,I) - A(I,K)*A(L,K)
                     END DO
                 END DO

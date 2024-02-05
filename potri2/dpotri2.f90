@@ -14,8 +14,6 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     EXTERNAL           DPOTRI2S, DPOTRI2B
 
     INTEGER            NB
-
-    ! Configurable block size
     PARAMETER          (NB = 32)
 
     IF (NB.LE.1 .OR. NB.GE.N) THEN

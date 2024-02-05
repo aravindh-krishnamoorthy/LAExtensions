@@ -15,7 +15,7 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     INTEGER            NB
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
-    PARAMETER (NB = 2)
+    PARAMETER ( NB = 2 )
 
     IF (UPLO.EQ.'U') THEN
         DO I = 1,N

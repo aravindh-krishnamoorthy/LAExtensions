@@ -4,7 +4,7 @@
 ! Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
 !###############################################################################
 
-SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
+SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     IMPLICIT           NONE
 
     CHARACTER          UPLO

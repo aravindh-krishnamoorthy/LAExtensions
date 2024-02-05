@@ -49,8 +49,8 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
                 END DO
             END DO
             DO L = J, J+JB-1
-                DO K = J-1, 1, -1
-                    DO I = 1, K-1
+                DO I = J-2, 1, -1
+                    DO K = I+1, J-1
                         A(L,I) = A(L,I) - A(I,K)*A(L,K)
                     END DO
                 END DO

@@ -3,7 +3,7 @@ using LinearAlgebra
 include("../src/MatrixAlgorithms.jl")
 
 rng = MersenneTwister(555);
-N = 1000
+N = 8
 A = randn(rng,N,N)
 A = A*A'
 

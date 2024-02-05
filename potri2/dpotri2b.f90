@@ -11,8 +11,8 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
-    INTEGER            I, J, K
-    INTEGER            NB
+    INTEGER            I, J, K, L
+    INTEGER            NN, JB, NB
     DOUBLE PRECISION   ONE, ZERO
     PARAMETER ( ONE = 1.0, ZERO = 0.0 )
     PARAMETER ( NB = 2 )
@@ -26,15 +26,31 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
             END DO
             A(I,I) = A(I,I)*A(I,I)
         END DO
-        DO J = N, 1, -1
-            DO K = N, J+1, -1
-                DO CONCURRENT (I = 1:J)
-                    A(J,I) = A(J,I) - A(I,K)*A(K,J)
+        NN = ((N-1)/NB)*NB+1
+        DO J = NN, 1, -NB
+            JB = MIN(NB, N-J+1)
+            DO L = J+JB-1, J, -1
+                DO K = N, L+1, -1
+                    DO CONCURRENT (I = J:L)
+                        A(L,I) = A(L,I) - A(I,K)*A(K,L)
+                    END DO
+                END DO
+                DO K = L, J, -1
+                    DO CONCURRENT (I = 1:K-1)
+                        A(L,I) = A(L,I) - A(I,K)*A(L,K)
+                    END DO
                 END DO
             END DO
-            DO K = J, 1, -1
-                DO CONCURRENT (I = 1:K-1)
-                    A(J,I) = A(J,I) - A(I,K)*A(J,K)
+            DO L = J+JB-1, J, -1
+                DO K = N, L+1, -1
+                    DO CONCURRENT (I = 1:J-1)
+                        A(L,I) = A(L,I) - A(I,K)*A(K,L)
+                    END DO
+                END DO
+                DO K = J-1, 1, -1
+                    DO CONCURRENT (I = 1:K-1)
+                        A(L,I) = A(L,I) - A(I,K)*A(L,K)
+                    END DO
                 END DO
             END DO
         END DO

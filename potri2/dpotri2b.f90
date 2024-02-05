@@ -35,10 +35,12 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
                         A(L,I) = A(L,I) - A(I,K)*A(K,L)
                     END DO
                 END DO
+                !A(L,J:L) = A(L,J:L) - MATMUL(A(L+1:N,L), TRANSPOSE(A(J:L,L+1:N)))
                 DO K = L, J, -1
                     DO CONCURRENT (I = 1:K-1)
                         A(L,I) = A(L,I) - A(I,K)*A(L,K)
                     END DO
+                    !A(L,1:K-1) = A(L,1:K-1) - A(1:K-1,K)*A(L,K)
                 END DO
             END DO
             DO L = J, J+JB-1

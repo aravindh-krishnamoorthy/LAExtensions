@@ -13,16 +13,7 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
 
     EXTERNAL           DPOTRI2S, DPOTRI2B
 
-    INTEGER            NB
-    PARAMETER          (NB = 32)
-
-    IF (NB.LE.1 .OR. NB.GE.N) THEN
-        ! Scalar version
-        CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
-    ELSE
-        ! Block version
-        CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
-    END IF
+    CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
     INFO = 0
     RETURN
 END

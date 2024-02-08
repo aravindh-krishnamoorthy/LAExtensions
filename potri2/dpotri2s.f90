@@ -13,9 +13,7 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
 
     INTEGER            NB, JB
     INTEGER            I, J, K
-    DOUBLE PRECISION   ONE, ZERO
-    PARAMETER ( NB = 32 )
-    PARAMETER ( ONE = 1.0, ZERO = 0.0 )
+    PARAMETER          ( NB = 32 )
 
     IF (UPLO.EQ.'U') THEN
         DO CONCURRENT (I = 1:N)

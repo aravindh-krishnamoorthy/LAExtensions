@@ -52,10 +52,8 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
                     A(I,K) = A(I,K) - DOT_PRODUCT(A(I+1:K,I), A(I+1:K,K))
                 END DO
             END DO
-            DO CONCURRENT (I = 1:J-JB)
-                DO CONCURRENT (K = J-JB+1:J)
-                    A(I,K) = A(I,K) - DOT_PRODUCT(A(K+1:N,I), A(K,K+1:N))
-                END DO
+            DO CONCURRENT (K = J-JB+1:J)
+                A(1:J-JB,K) = A(1:J-JB,K) - MATMUL(A(K,K+1:N), A(K+1:N,1:J-JB))
             END DO
             DO I = J-JB, 1, -1
                 DO CONCURRENT (K = J-JB+1:J)

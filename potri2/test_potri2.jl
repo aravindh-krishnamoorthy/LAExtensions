@@ -8,7 +8,7 @@
 using LinearAlgebra
 using BenchmarkTools
 
-for N in [8, 32, 64, 1000]
+for N in [1000]
     println("N=$N...")
 
     # Real

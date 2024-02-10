@@ -9,6 +9,8 @@ An efficient version of LAPACK's `potri` using the algorithm in "Matrix Inversio
 
 ## IEEE double precision
 
+Linux (x86_64-linux-gnu) on 8×11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+
 | N | MKL/U (ns) | MKL/L (ns) | Fortran/U (ns) | Fortran/L (ns) |
 | :--- | :--- | :--- | :--- | :--- |
 | 2 | 2.7e+02 | 2.6e+02 | 45 | 46 |

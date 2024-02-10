@@ -48,8 +48,14 @@ for i in 1:length(MS)
     FL[i] = mean(b).time
 end
 
-plt = scatter(MS, MKLU, m=:square, label="MKLU")
-plt = scatter!(plt, MS, MKLL, m=:square, label="MKLL")
-plt = scatter!(plt, MS, FU, m=:cross, label="FU")
-plt = scatter!(plt, MS, FL, m=:cross, label="FL")
-plt = plot!(plt, title="MKL potri vs potri2 in Julia", xlabel="n", ylabel="Time (ns)", xscale=:log2, yscale=:log10, grid=true)
+# plt = scatter(MS, MKLU, m=:square, label="MKLU")
+# plt = scatter!(plt, MS, MKLL, m=:square, label="MKLL")
+# plt = scatter!(plt, MS, FU, m=:cross, label="FU")
+# plt = scatter!(plt, MS, FL, m=:cross, label="FL")
+# plt = plot!(plt, title="MKL potri vs potri2 in Julia", xlabel="n", ylabel="Time (ns)", xscale=:log2, yscale=:log10, grid=true)
+
+println("| N | MKL/U (ns) | MKL/L (ns) | Fortran/U (ns) | Fortran/L (ns) |")
+println("| :--- | :--- | :--- | :--- | :--- |")
+for i = 1:length(MS)
+    Printf.@printf("| %d | %.2g | %.2g | %.2g | %.2g |\n", MS[i], MKLU[i], MKLL[i], FU[i], FL[i])
+end

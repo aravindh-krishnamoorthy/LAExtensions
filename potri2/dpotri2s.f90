@@ -11,43 +11,61 @@ SUBROUTINE DPOTRI2S(UPLO, N, A, LDA, INFO)
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
-    INTEGER            I, J
+    INTEGER            I, J, K
+    DOUBLE PRECISION   ONE, ZERO
+    PARAMETER ( ONE = 1.0, ZERO = 0.0 )
 
     IF (UPLO.EQ.'U') THEN
-        DO CONCURRENT (I = 1:N)
+        DO I = 1,N
             A(I,I) = 1/A(I,I)
-            A(I,I+1:N) = A(I,I+1:N)*A(I,I)
-            A(I+1:N,I) = 0
+            DO CONCURRENT (J = I+1:N)
+                A(I,J) = A(I,J)*A(I,I)
+                A(J,I) = 0
+            END DO
             A(I,I) = A(I,I)*A(I,I)
         END DO
         DO J = N, 1, -1
-            DO CONCURRENT (I = 1:J)
-                A(J,I) = A(J,I) - DOT_PRODUCT(A(I,J+1:N), A(J+1:N,J))
+            DO K = N, J+1, -1
+                DO CONCURRENT (I = 1:J)
+                    A(J,I) = A(J,I) - A(I,K)*A(K,J)
+                END DO
             END DO
-            DO I = J-1, 1, -1
-                A(J,I) = A(J,I) - DOT_PRODUCT(A(I,I+1:J), A(J,I+1:J))
+            DO K = J, 1, -1
+                DO CONCURRENT (I = 1:K-1)
+                    A(J,I) = A(J,I) - A(I,K)*A(J,K)
+                END DO
             END DO
         END DO
         DO CONCURRENT (I = 1:N)
-            A(I,I+1:N) = A(I+1:N,I)
+            DO CONCURRENT (J = I+1:N)
+                A(I,J) = A(J,I)
+            END DO
         END DO
     ELSE ! UPLO.EQ.'L'
-        DO CONCURRENT (J = 1:N)
+        DO J = 1, N
             A(J,J) = 1/A(J,J)
-            A(J+1:N,J) = A(J+1:N,J)*A(J,J)
-            A(J,J+1:N) = 0
+            DO CONCURRENT (I = J+1:N)
+                A(I,J) = A(I,J)*A(J,J)
+                A(J,I) = 0
+            END DO
             A(J,J) = A(J,J)*A(J,J)
         END DO
         DO J = N, 1, -1
-            DO CONCURRENT (I = 1:J)
-                A(I,J) = A(I,J) - DOT_PRODUCT(A(J+1:N,I), A(J,J+1:N))
+            DO K = N, J+1, -1
+                DO CONCURRENT (I = 1:J)
+                    A(I,J) = A(I,J) - A(K,I)*A(J,K)
+                END DO
             END DO
-            DO I = J-1, 1, -1
-                A(I,J) = A(I,J) - DOT_PRODUCT(A(I+1:J,I), A(I+1:J,J))
+            DO K = J, 1, -1
+                DO CONCURRENT (I = 1:K-1)
+                    A(I,J) = A(I,J) - A(K,I)*A(K,J)
+                END DO
             END DO
         END DO
         DO CONCURRENT (I = 1:N)
-            A(I,1:I-1) = A(1:I-1,I)
+            DO CONCURRENT (J = 1:I-1)
+                A(I,J) = A(J,I)
+            END DO
         END DO
     END IF
     INFO = 0

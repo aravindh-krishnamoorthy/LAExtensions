@@ -4,11 +4,19 @@
 # Copyright (C) 2023 Aravindh Krishnamoorthy and contributors.
 ################################################################################
 
-# using MKL
+using MKL
 using LinearAlgebra
 using BenchmarkTools
+using Plots
+unicodeplots()
 
-for N in [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+MS = [2, 4, 8, 16, 32, 64, 128, 256]
+FU = zeros(length(MS))
+FL = zeros(length(MS))
+MKLU = zeros(length(MS))
+MKLL = zeros(length(MS))
+for i in 1:length(MS)
+    N = MS[i] 
     println("N=$N...")
 
     # Real
@@ -26,9 +34,22 @@ for N in [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     X1 = MatrixAlgorithms.dpotri2!('L', copy(L))
     display(norm(triu(X1) - X0))
     # Timing
-    @btime LAPACK.potri!('U', copy($U)) ;
-    @btime MatrixAlgorithms.potri2!('U', copy($U)) ;
-    @btime MatrixAlgorithms.potri2!('L', copy($L)) ;
-    @btime MatrixAlgorithms.dpotri2!('U', copy($U); rl=false) ;
-    @btime MatrixAlgorithms.dpotri2!('L', copy($L); rl=false) ;
+    b = @benchmark LAPACK.potri!('U', copy($U)) ;
+    MKLU[i] = mean(b).time
+    b = @benchmark LAPACK.potri!('L', copy($L)) ;
+    MKLL[i] = mean(b).time
+    # b = @benchmark MatrixAlgorithms.potri2!('U', copy($U)) ;
+    # JU[i] = mean(b).time
+    # b = @benchmark MatrixAlgorithms.potri2!('L', copy($L)) ;
+    # JL[i] = mean(b).time
+    b = @benchmark MatrixAlgorithms.dpotri2!('U', copy($U); rl=false) ;
+    FU[i] = mean(b).time
+    b = @benchmark MatrixAlgorithms.dpotri2!('L', copy($L); rl=false) ;
+    FL[i] = mean(b).time
 end
+
+plt = scatter(MS, MKLU, m=:square, label="MKLU")
+plt = scatter!(plt, MS, MKLL, m=:square, label="MKLL")
+plt = scatter!(plt, MS, FU, m=:cross, label="FU")
+plt = scatter!(plt, MS, FL, m=:cross, label="FL")
+plt = plot!(plt, title="MKL potri vs potri2 in Julia", xlabel="n", ylabel="Time (ns)", xscale=:log2, yscale=:log10, grid=true)

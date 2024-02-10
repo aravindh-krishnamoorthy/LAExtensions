@@ -1,7 +1,7 @@
 .PHONY: all
 
 SHLIB := potri2.so
-SRCS  := dpotri2.f90 dpotri2s.f90
+SRCS  := dpotri2.f90 dpotri2s.f90 dpotri2b.f90
 FOPTS += -Ofast -march=native -masm=intel -fverbose-asm -fPIC -shared -save-temps
 FLIBS := -llapack -lblas -lgfortran -lm
 

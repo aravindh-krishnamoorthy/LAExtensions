@@ -11,9 +11,18 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     INTEGER            INFO, LDA, N
     DOUBLE PRECISION   A( LDA, * )
 
-    EXTERNAL           DPOTRI2S
+    EXTERNAL           DPOTRI2S, DPOTRI2B
 
-    CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
+    INTEGER            NB
+    PARAMETER          (NB = 32)
+
+    IF (NB.LE.1 .OR. NB.GE.N) THEN
+        ! Scalar version
+        CALL DPOTRI2S(UPLO, N, A, LDA, INFO)
+    ELSE
+        ! Block version
+        CALL DPOTRI2B(UPLO, N, A, LDA, INFO)
+    END IF
     INFO = 0
     RETURN
 END

@@ -7,8 +7,9 @@
 using MKL
 using LinearAlgebra
 using BenchmarkTools
-using Plots
-unicodeplots()
+using Printf
+# using Plots
+# unicodeplots()
 
 MS = [2, 4, 8, 16, 32, 64, 128, 256]
 FU = zeros(length(MS))

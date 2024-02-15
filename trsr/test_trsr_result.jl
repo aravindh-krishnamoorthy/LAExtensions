@@ -4,7 +4,7 @@ using BenchmarkTools
 for iter = 1:1000
     println("$iter/1000...")
     for N in [8, 64, 1000]
-            # Real _sqrt_quasi_triu!
+            # Real trsr!
             X = randn(N,N)
             X1 = MatrixAlgorithms.sqrtm(X)
             @assert X1*X1 ≈ X
@@ -14,7 +14,17 @@ for iter = 1:1000
             @assert X1*X1 ≈ X+N*I(N)
             X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N))
             @assert X1*X1 ≈ X+X'+N*I(N)
-            # Complex _sqrt_quasi_triu!
+            # Real trsrf!
+            X = randn(N,N)
+            X1 = MatrixAlgorithms.sqrtm(X, MatrixAlgorithms.trsrf!)
+            @assert X1*X1 ≈ X
+            X1 = MatrixAlgorithms.sqrtm(X+X', MatrixAlgorithms.trsrf!)
+            @assert X1*X1 ≈ X+X'
+            X1 = MatrixAlgorithms.sqrtm(X+N*I(N), MatrixAlgorithms.trsrf!)
+            @assert X1*X1 ≈ X+N*I(N)
+            X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N), MatrixAlgorithms.trsrf!)
+            @assert X1*X1 ≈ X+X'+N*I(N)
+            # Complex trsr!
             X = complex.(randn(N,N),randn(N,N))
             X1 = MatrixAlgorithms.sqrtm(X)
             @assert X1*X1 ≈ X
@@ -24,15 +34,15 @@ for iter = 1:1000
             @assert X1*X1 ≈ X+N*I(N)
             X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N))
             @assert X1*X1 ≈ X+X'+N*I(N)
-            # Complex ztrsr!
+            # Complex trsrf!
             X = complex.(randn(N,N),randn(N,N))
-            X1 = MatrixAlgorithms.sqrtm(X, MatrixAlgorithms.ztrsr!)
+            X1 = MatrixAlgorithms.sqrtm(X, MatrixAlgorithms.trsrf!)
             @assert X1*X1 ≈ X
-            X1 = MatrixAlgorithms.sqrtm(X+X', MatrixAlgorithms.ztrsr!)
+            X1 = MatrixAlgorithms.sqrtm(X+X', MatrixAlgorithms.trsrf!)
             @assert X1*X1 ≈ X+X'
-            X1 = MatrixAlgorithms.sqrtm(X+N*I(N), MatrixAlgorithms.ztrsr!)
+            X1 = MatrixAlgorithms.sqrtm(X+N*I(N), MatrixAlgorithms.trsrf!)
             @assert X1*X1 ≈ X+N*I(N)
-            X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N), MatrixAlgorithms.ztrsr!)
+            X1 = MatrixAlgorithms.sqrtm(X+X'+N*I(N), MatrixAlgorithms.trsrf!)
             @assert X1*X1 ≈ X+X'+N*I(N)
         end
     end

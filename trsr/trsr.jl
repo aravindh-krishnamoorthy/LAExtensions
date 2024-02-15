@@ -20,13 +20,13 @@ using LinearAlgebra
 #         triangular Schur matrix does not have a square root in type T
 #
 ################################################################################
-function sqrtm(A::AbstractMatrix{T}, trsr::Function = trsr!) where {T}
+function sqrtm(A::AbstractMatrix{T}, f::Function = trsr!) where {T}
     m, n = size(A)
     (m == n) || throw(ArgumentError("sqrt: Matrix A must be square."))
     symmetric = ishermitian(A)
     if symmetric
         e, V = eigen(A)
-        negative = isreal(e) && any(e .< 0)
+        negative = any(e .< 0)
         if negative
             Q = Diagonal(sqrt.(complex.(e)))
             if isreal(V)
@@ -50,10 +50,10 @@ function sqrtm(A::AbstractMatrix{T}, trsr::Function = trsr!) where {T}
         if negative
             S = Schur{Complex}(S)
         end
-        return S.Z*trsr!(S.T)*S.Z'
+        return S.Z*f(S.T)*S.Z'
     else # complex A
         S = schur(A)
-        return S.Z*trsr!(S.T)*S.Z'
+        return S.Z*f(S.T)*S.Z'
     end
 end
 
@@ -64,7 +64,7 @@ end
 #   SIAM Journal on Matrix Analysis and Applications (Vol. 24, Issue 4, pp. 971–989).
 #   https://doi.org/10.1137/s0895479801392697
 #
-# VERSION: Pure Julia version
+# VERSION: Pure Julia version for both real- and complex-valued inputs
 # NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
@@ -134,12 +134,15 @@ end
 #   SIAM Journal on Matrix Analysis and Applications (Vol. 24, Issue 4, pp. 971–989).
 #   https://doi.org/10.1137/s0895479801392697
 #
-# VERSION: Eventual FORTRAN version (Complex valued)
+# VERSION: Eventual FORTRAN version for both real- and complex-valued inputs
+# NOTE: It is assumed that the diagonal elements of A have a square root in type T
 #
 ################################################################################
-@views @inbounds function ztrsr!(A::AbstractMatrix{T}) where {T<:Complex}
+@views @inbounds function trsrf!(A::AbstractMatrix{T}) where {T}
     m, n = size(A)
-    (m == n) || throw(ArgumentError("trsr!: Matrix A must be square."))
+    (m == n) || throw(ArgumentError("trsrf!: Matrix A must be square."))
+    # Choose complex or real dot product based on T
+    dot = T <: Complex ? BLAS.dotu : BLAS.dot
     # Square roots of 1x1 and 2x2 diagonal blocks
     i = 1
     sizes = ones(Int,n)
@@ -179,7 +182,7 @@ end
             L₀ = M_L₀[1:s₁*s₂,1:s₁*s₂]
             L₁ = M_L₁[1:s₁*s₂,1:s₁*s₂]
             if s₁ == 1 && s₂ == 1
-                Bᵢⱼ⁽⁰⁾ = BLAS.dotu(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
+                Bᵢⱼ⁽⁰⁾ = dot(A[i₁,k₁:k₂], A[k₁:k₂,j₁])
                 A[i₁,j₁] = (A[i₁,j₁] - Bᵢⱼ⁽⁰⁾)/(A[i₁,i₁] + A[j₁,j₁])
             else
                 # Compute Bᵢⱼ⁽⁰⁾ and update A[i₁:i₂,j₁:j₂]
@@ -192,3 +195,4 @@ end
     end
     return A
 end
+

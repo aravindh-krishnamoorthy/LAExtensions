@@ -89,10 +89,10 @@ SUBROUTINE DPOTRI2BO(UPLO, N, A, LDA, INFO, J, JB, I, IB)
 
     IF (UPLO.EQ.'U') THEN
     ELSE
+        DO CONCURRENT (K = J-JB+1:J)
+            A(I-IB+1:I,K) = A(I-IB+1:I,K) - MATMUL(A(K,K+1:N), A(K+1:N,I-IB+1:I))
+        END DO
         DO L = I, I-IB+1, -1
-            DO CONCURRENT (K = J-JB+1:J)
-                A(L,K) = A(L,K) - DOT_PRODUCT(A(K,K+1:N), A(K+1:N,L))
-            END DO
             DO CONCURRENT (K = J-JB+1:J)
                 A(L,K) = A(L,K) - DOT_PRODUCT(A(L+1:K,L), A(L+1:K,K))
             END DO

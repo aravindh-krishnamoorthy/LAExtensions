@@ -12,7 +12,7 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
     DOUBLE PRECISION   A( LDA, * )
 
     INTEGER            NB, IB, JB
-    INTEGER            I, J, K, L
+    INTEGER            I, J
     PARAMETER          ( NB = 4 )
 
     IF (UPLO.EQ.'U') THEN

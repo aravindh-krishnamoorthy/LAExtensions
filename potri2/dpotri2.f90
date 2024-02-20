@@ -14,7 +14,7 @@ SUBROUTINE DPOTRI2(UPLO, N, A, LDA, INFO)
     EXTERNAL           DPOTRI2S, DPOTRI2B
 
     INTEGER            NB
-    PARAMETER          (NB = 32)
+    PARAMETER          ( NB = 4 )
 
     IF (NB.LE.1 .OR. NB.GE.N) THEN
         ! Scalar version

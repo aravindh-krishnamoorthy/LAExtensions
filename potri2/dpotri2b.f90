@@ -13,7 +13,7 @@ SUBROUTINE DPOTRI2B(UPLO, N, A, LDA, INFO)
 
     INTEGER            NB, IB, JB
     INTEGER            I, J
-    PARAMETER          ( NB = 4 )
+    PARAMETER          ( NB = 32 )
 
     IF (UPLO.EQ.'U') THEN
         DO CONCURRENT (I = 1:N)

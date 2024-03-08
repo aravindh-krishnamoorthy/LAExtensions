@@ -12,5 +12,10 @@ include("../potri2/potri2.jl")
 # Matrix square root
 ########################################
 include("../trsr/trsr.jl")
+########################################
+# ordschur:
+# Schur matrix reordering
+########################################
+include("../ordschur/ordschur.jl")
 
 end

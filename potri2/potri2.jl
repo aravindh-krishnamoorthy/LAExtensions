@@ -8,6 +8,7 @@ using LinearAlgebra
 using Libdl
 
 include("potri2_fglue.jl")
+include("potri2_parallel.jl")
 
 ################################################################################
 # Invert a positive definite matrix using the algorithm in

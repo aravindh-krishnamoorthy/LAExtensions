@@ -32,8 +32,7 @@ function potri2_bo!(uplo::Char, X::AbstractMatrix{T}, i::Integer, ib::Integer, j
     else # uplo == 'L'
         for k = j-jb+1:j
             if k < n
-                println("$(k+1:n),$(i-ib+1:i),$(k),$(k+1:n)")
-                X[i-ib+1:i,k] = X[i-ib+1:i,k] - X[k+1:n,i-ib+1:i]'*X[k,k+1:n]'
+                X[i-ib+1:i,k] = X[i-ib+1:i,k] - X[k+1:n,i-ib+1:i]'*X[k:k,k+1:n]'
             end
         end
         for l = i:-1:i-ib+1
@@ -56,12 +55,15 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
             X[j,j+1:n] .= 0
             X[j,j] = X[j,j]*X[j,j]
         end
-        for j = n:-nb:1
-            jb = min(j,nb)
-            potri2_bd!(uplo, X, j, jb)
-            for i = j-jb:-nb:1
-                ib = min(i,nb)
-                potri2_bo!(uplo, X, i, ib, j, jb)
+        for i = n:-nb:1
+            ib = min(i,nb)
+            for j = n:-nb:i
+                jb = min(j,nb)
+                if i == j
+                    potri2_bd!(uplo, X, j, jb)
+                else
+                    potri2_bo!(uplo, X, i, ib, j, jb)
+                end
             end
         end
         return X

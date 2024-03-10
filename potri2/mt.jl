@@ -12,7 +12,6 @@ T = Matrix(cholesky(A).L) ;
 T1 = LAPACK.potri!('L', copy(T))
 T1 = tril(T1)
 display(T1)
-# T2 = MatrixAlgorithms.dpotri2!('U', copy(T))
 T2 = MatrixAlgorithms.potri2_parallel!('L',copy(T))
 T2 = triu(T2)'
 display(T2)

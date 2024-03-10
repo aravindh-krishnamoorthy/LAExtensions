@@ -55,10 +55,10 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
             X[j,j+1:n] .= 0
             X[j,j] = X[j,j]*X[j,j]
         end
-        for i = n:-nb:1
-            ib = min(i,nb)
-            for j = n:-nb:i
-                jb = min(j,nb)
+        for j = n:-nb:1
+            jb = min(j,nb)
+            for i = j:-nb:1
+                ib = min(i,nb)
                 if i == j
                     potri2_bd!(uplo, X, j, jb)
                 else

@@ -55,15 +55,31 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
             X[j,j+1:n] .= 0
             X[j,j] = X[j,j]*X[j,j]
         end
-        #TODO: Anti-diagonal blocks can be run parallelly.
+        # Anti-diagonal blocks can be run parallelly.
+        jb = 0
         for j = n:-nb:1
-            jb = min(j,nb)
-            for i = j:-nb:1
-                ib = min(i,nb)
-                if i == j
-                    potri2_bd!(uplo, X, j, jb)
-                else
-                    potri2_bo!(uplo, X, i, ib, j, jb)
+            Threads.@threads for k = n:-nb:j
+                ii = k
+                ib = min(ii,nb)
+                jj = j+(n-k)
+                jb = min(jj,nb)
+                if ii == jj
+                    potri2_bd!(uplo, X, jj, jb)
+                elseif ii > jj
+                    potri2_bo!(uplo, X, jj, jb, ii, ib)
+                end
+            end
+        end
+        for i = n-nb:-nb:1
+            Threads.@threads for k = jb:nb:i
+                ii = i-(k-jb)
+                ib = min(ii,nb)
+                jj = k
+                jb = min(jj,nb)
+                if ii == jj
+                    potri2_bd!(uplo, X, jj, jb)
+                elseif ii > jj
+                    potri2_bo!(uplo, X, jj, jb, ii, ib)
                 end
             end
         end

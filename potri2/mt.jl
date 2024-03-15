@@ -15,5 +15,5 @@ display(T1)
 T2 = MatrixAlgorithms.potri2_parallel!('L',copy(T))
 T2 = triu(T2)'
 display(T2)
-#display(T1-T2)
+display(T1-T2)
 norm(T1-T2)

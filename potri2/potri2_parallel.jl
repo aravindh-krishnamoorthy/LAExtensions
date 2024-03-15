@@ -46,6 +46,7 @@ end
 function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
     nb = 2
     n = size(X,1)
+    @assert(mod(n,nb)==0)
     if uplo == 'U'
         return potri!(uplo, X)
     else # uplo == 'L'

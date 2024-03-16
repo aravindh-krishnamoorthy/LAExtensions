@@ -44,9 +44,8 @@ function potri2_bo!(uplo::Char, X::AbstractMatrix{T}, i::Integer, ib::Integer, j
 end
 
 function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
-    nb = 2
+    nb = 32
     n = size(X,1)
-    @assert(mod(n,nb)==0)
     if uplo == 'U'
         return potri!(uplo, X)
     else # uplo == 'L'
@@ -57,7 +56,7 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
             X[j,j] = X[j,j]*X[j,j]
         end
         # Anti-diagonal blocks can be run parallelly.
-        jb = 0
+        ib = 0
         for j = n:-nb:1
             Threads.@threads for k = n:-nb:j
                 ii = k
@@ -71,9 +70,10 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
                 end
             end
         end
+        beg = ib
         for i = n-nb:-nb:1
-            Threads.@threads for k = jb:nb:i
-                ii = i-(k-jb)
+            Threads.@threads for k = beg:nb:i
+                ii = i-(k-beg)
                 ib = min(ii,nb)
                 jj = k
                 jb = min(jj,nb)

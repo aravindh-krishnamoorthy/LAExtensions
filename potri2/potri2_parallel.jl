@@ -47,7 +47,7 @@ function potri2_parallel!(uplo::Char, X::AbstractMatrix{T}) where {T}
     nb = 32
     n = size(X,1)
     if uplo == 'U'
-        return potri!(uplo, X)
+        return potri2!(uplo, X)
     else # uplo == 'L'
         for j = 1:n
             X[j,j] = 1/X[j,j]

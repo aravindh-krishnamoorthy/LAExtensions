@@ -3,8 +3,8 @@ An efficient version of LAPACK's `potri` using the algorithm in "Matrix Inversio
 
 **Note:** This function is only partially implemented.
 
-- For $N \leq 32,$ the scalar version in `dpotri2s.f90` is used, which is partially optimized.
-- For $N>32,$ the block version in `dpotri2b.f90` is used, which is not yet optimized or parallelized.
+- For $N < 32,$ the scalar version in `dpotri2s.f90` is used, which is partially optimized.
+- For $N \geq 32,$ the block version in `dpotri2b.f90` is used, which is not yet optimized or parallelized.
 - Only the IEEE double precision version is currently being implemented. Once complete, the single precision and complex-valued variants will be implemented.
 
 ## IEEE double precision

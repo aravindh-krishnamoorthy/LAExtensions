@@ -19,10 +19,11 @@ include("potri2_parallel.jl")
 ################################################################################
 function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     n = size(X,1)
-    d = diag(X)
+    d = zeros(n,1)
     if uplo == 'U'
         for j = 1:n
             X[j,j] = 1/X[j,j]
+            d[j] = X[j,j]
             for i = j+1:n
                 X[i,j] = 0
             end
@@ -34,7 +35,7 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
                 end
             end
             for k = j:-1:1
-                X[j,k] = conj(X[j,k]/d[k])
+                X[j,k] = conj(X[j,k]*d[k])
                 for i = 1:k-1
                     X[j,i] = X[j,i] - X[i,k]*conj(X[j,k])
                 end
@@ -45,6 +46,7 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
     else # uplo == 'L'
         for j = 1:n
             X[j,j] = 1/X[j,j]
+            d[j] = X[j,j]
             for i = 1:j-1
                 X[i,j] = 0
             end
@@ -56,7 +58,7 @@ function potri2!(uplo::Char, X::AbstractMatrix{T}) where {T}
                 end
             end
             for k = j:-1:1
-                X[k,j] = conj(X[k,j]/d[k])
+                X[k,j] = conj(X[k,j]*d[k])
                 for i = 1:k-1
                     X[i,j] = X[i,j] - X[k,i]*conj(X[k,j])
                 end
